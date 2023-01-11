@@ -1,33 +1,60 @@
-﻿using LaLiga.Application.Contracts.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
+using LaLiga.Application.Contracts.Infrastructure;
 using LaLiga.Domain.Common;
+using LaLiga.Infrastructure.Persistence;
 
 namespace LaLiga.Infrastructure.Repositories
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseDomainModel
     {
-        public Task<TEntity> CreateAsync(TEntity entity)
+        private readonly CatalogContext context;
+
+        public GenericRepository(CatalogContext context)
         {
-            throw new NotImplementedException();
+            this.context = context;
         }
 
-        public Task<IReadOnlyList<TEntity>> GetAllAsync()
+        public async Task<IReadOnlyList<TEntity>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await this.context.Set<TEntity>().ToListAsync();
         }
 
-        public Task<TEntity> GetByIdAsync(int id)
+        public async Task<IReadOnlyList<TEntity>> GetAllWithSpecAsync(ISpecification<TEntity> spec)
         {
-            throw new NotImplementedException();
+            var querySpecificationResult = ApplySpecEvaluator(spec);
+            return await querySpecificationResult.ToListAsync();
         }
 
-        public Task RemoveEntity(TEntity entity)
+        public async Task<TEntity> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await this.context.Set<TEntity>().FirstOrDefaultAsync(d => d.Id == id);
+        }
+
+        public async Task<TEntity> GetByIdWithSpecAsync(ISpecification<TEntity> spec)
+        {
+            var querySpecificationResult = ApplySpecEvaluator(spec);
+            return await querySpecificationResult.FirstOrDefaultAsync();
         }
 
         public Task<TEntity> UpdateAsync(TEntity entity)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<TEntity> CreateAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+        public Task RemoveEntity(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        private IQueryable<TEntity> ApplySpecEvaluator(ISpecification<TEntity> spec)
+        {
+            IQueryable<TEntity> query = this.context.Set<TEntity>().AsQueryable();
+            var queryResult = SpecificationEvaluator<TEntity>.Evaluate(query, spec);
+            return queryResult;
         }
     }
 }

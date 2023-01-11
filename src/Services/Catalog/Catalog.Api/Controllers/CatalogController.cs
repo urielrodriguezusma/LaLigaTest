@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LaLiga.Application.Contracts;
+using LaLiga.Application.Dto;
+using LaLiga.Application.Specifications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Controllers
@@ -7,10 +9,20 @@ namespace Catalog.Api.Controllers
     [ApiController]
     public class CatalogController : ControllerBase
     {
-        public CatalogController()
-        {
+        private readonly ICatalogService catalogService;
 
+        public CatalogController(ICatalogService catalogService)
+        {
+            this.catalogService = catalogService;
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(ProductDto),StatusCodes.Status200OK)]
+        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProducts()
+        {
+            ProductWithCategorySpecification productSpec = new ProductWithCategorySpecification();
+            var resp = await this.catalogService.GetProductsWithSpecAsync(productSpec).ConfigureAwait(false);
+            return Ok(resp);
+        }
     }
 }

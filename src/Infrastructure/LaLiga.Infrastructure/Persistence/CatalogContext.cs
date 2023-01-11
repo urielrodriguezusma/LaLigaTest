@@ -16,9 +16,9 @@ namespace LaLiga.Infrastructure.Persistence
         {
             modelBuilder.Entity<Category>().HasData(new Category[]
              {
-                    new Category {Id=1, CategoryName="Technology"},
-                    new Category {Id=2, CategoryName="T-Shirts"},
-                    new Category {Id=3,CategoryName="Hoodie"}
+                    new Category {Id=1, CategoryName="Technology",Description="Everything in technology"},
+                    new Category {Id=2, CategoryName="T-Shirts",Description="Fashion for all teams"},
+                    new Category {Id=3,CategoryName="Hoodie",Description="Hoodie relaxing fit XCH"}
              });
             modelBuilder.Entity<Product>().HasData(new Product[]
             {    new Product
