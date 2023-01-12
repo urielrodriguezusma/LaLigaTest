@@ -1,7 +1,5 @@
-﻿using LaLiga.Application.Contracts.Infrastructure;
-using LaLiga.Application.Dto;
+﻿using LaLiga.Application.Dto;
 using LaLiga.Application.Specifications;
-using LaLiga.Domain.Model;
 
 namespace LaLiga.Application.Contracts
 {
@@ -9,5 +7,6 @@ namespace LaLiga.Application.Contracts
     {
         Task<IReadOnlyList<ProductDto>> GetProductsAsync();
         Task<IReadOnlyList<ProductDto>> GetProductsWithSpecAsync(ProductWithCategorySpecification spec);
+        Task<ProductDto> GetProductsByIdWithSpecAsync(ProductWithCategorySpecification spec);
     }
 }

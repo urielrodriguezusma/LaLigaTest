@@ -27,7 +27,6 @@ namespace LaLiga.Application.Services
             }
             return null;
         }
-
         public async Task<IReadOnlyList<ProductDto>> GetProductsWithSpecAsync(ProductWithCategorySpecification spec)
         {
             var products = await this.unitOfWork.GetRepository().GetAllWithSpecAsync(spec);
@@ -37,5 +36,17 @@ namespace LaLiga.Application.Services
             }
             return null;
         }
+
+        public async Task<ProductDto> GetProductsByIdWithSpecAsync(ProductWithCategorySpecification spec)
+        {
+            var product = await this.unitOfWork.GetRepository().GetByIdWithSpecAsync(spec);
+            if (product != null)
+            {
+                return this.mapper.Map<ProductDto>(product);
+            }
+
+            return null;
+        }
+
     }
 }

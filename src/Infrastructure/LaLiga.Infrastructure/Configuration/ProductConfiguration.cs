@@ -10,7 +10,7 @@ namespace LaLiga.Infrastructure.Configuration
         {
             builder.Property(d => d.Id).IsRequired();
             builder.Property(d => d.Name).IsRequired()
-                                          .HasMaxLength(30);
+                                         .HasMaxLength(30);
 
             builder.Property(d => d.UnitPrice).HasColumnType("decimal(18,2)");
 
