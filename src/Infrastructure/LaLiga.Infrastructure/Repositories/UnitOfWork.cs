@@ -1,12 +1,7 @@
 ﻿using LaLiga.Application.Contracts.Infrastructure;
 using LaLiga.Domain.Common;
 using LaLiga.Infrastructure.Persistence;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LaLiga.Infrastructure.Repositories
 {

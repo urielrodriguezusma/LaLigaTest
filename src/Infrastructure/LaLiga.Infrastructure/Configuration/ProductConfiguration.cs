@@ -13,11 +13,6 @@ namespace LaLiga.Infrastructure.Configuration
                                          .HasMaxLength(30);
 
             builder.Property(d => d.UnitPrice).HasColumnType("decimal(18,2)");
-
-            builder.HasOne(d => d.Category)
-                   .WithMany()
-                   .HasForeignKey(d => d.CategoryId);
-
         }
     }
 }
