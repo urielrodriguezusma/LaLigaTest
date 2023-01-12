@@ -59,7 +59,7 @@ namespace LaLiga.Infrastructure.Repositories
         {
             IQueryable<TEntity> query = this.context.Set<TEntity>().AsQueryable();
             var queryResult = SpecificationEvaluator<TEntity>.Evaluate(query, spec);
-            return queryResult;
+            return queryResult; 
         }
     }
 }
