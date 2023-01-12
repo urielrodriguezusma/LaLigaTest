@@ -36,6 +36,17 @@ namespace LaLiga.Application.Services
             }
             return null;
         }
+        public async Task<ProductDto> GetProductByIdAsync(int id)
+        {
+            var product= await this.unitOfWork.GetRepository().GetByIdAsync(id);
+            if (product != null)
+            {
+                var productDto = this.mapper.Map<ProductDto>(product);
+                return productDto;
+            }
+            return null;
+
+        }
 
         public async Task<ProductDto> GetProductsByIdWithSpecAsync(ProductWithCategorySpecification spec)
         {
@@ -48,5 +59,32 @@ namespace LaLiga.Application.Services
             return null;
         }
 
+        public async Task<ProductDto> CreateProductAsync(ProductToCreate newProduct)
+        {
+            var product= this.mapper.Map<Product>(newProduct);
+            var productCreated = await this.unitOfWork.GetRepository().CreateAsync(product);
+            var result = this.mapper.Map<ProductDto>(productCreated);
+            return result;
+        }
+
+        public async Task<bool> DeleteProductByIdAsync(int id)
+        {
+            var productRepo = this.unitOfWork.GetRepository();
+            var productToRemove= await productRepo.GetByIdAsync(id);
+            if (productToRemove != null)
+            {
+                await productRepo.RemoveEntity(productToRemove);
+                return true;
+            }
+
+            return false;
+        }
+        public async Task<ProductDto> UpdateProductAsync(ProductDto product)
+        {
+            var productToUpdate = this.mapper.Map<Product>(product);
+            var updatedProduct = await this.unitOfWork.GetRepository().UpdateAsync(productToUpdate);
+            var result = this.mapper.Map<ProductDto>(updatedProduct);
+            return result;
+        }
     }
 }

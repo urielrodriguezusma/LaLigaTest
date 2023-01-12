@@ -18,7 +18,7 @@ namespace Catalog.Api.Validators
                                       .WithMessage("CategoryId should be a number between 1 - 3");
 
             RuleFor(d => d.Stock).NotEmpty()
-                                 .LessThan(0)
+                                 .GreaterThanOrEqualTo(0)
                                  .WithMessage("Stock should be a value greater or equals to zero");
                    
         }

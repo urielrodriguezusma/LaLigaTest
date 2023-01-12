@@ -6,14 +6,9 @@ namespace LaLiga.Application.Specifications
     {
         public ProductWithCategorySpecification(int id) : base(d => d.Id == id)
         {
-            AddProductInclude();
+            this.AddInclude(d => d.Category);
         }
         public ProductWithCategorySpecification()
-        {
-            AddProductInclude();
-        }
-
-        private void AddProductInclude()
         {
             this.AddInclude(d => d.Category);
         }

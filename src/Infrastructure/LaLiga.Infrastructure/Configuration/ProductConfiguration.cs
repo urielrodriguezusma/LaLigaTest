@@ -14,9 +14,9 @@ namespace LaLiga.Infrastructure.Configuration
 
             builder.Property(d => d.UnitPrice).HasColumnType("decimal(18,2)");
 
-            builder.HasOne(d => d.Category)
-                   .WithMany()
-                   .HasForeignKey(d => d.CategoryId);
+            //builder.HasOne(d => d.Category)
+            //       .WithMany()
+            //       .HasForeignKey(d => d.CategoryId);
 
         }
     }

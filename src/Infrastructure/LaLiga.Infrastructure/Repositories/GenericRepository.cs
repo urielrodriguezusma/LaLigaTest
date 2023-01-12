@@ -36,18 +36,23 @@ namespace LaLiga.Infrastructure.Repositories
             return await querySpecificationResult.FirstOrDefaultAsync();
         }
 
-        public Task<TEntity> UpdateAsync(TEntity entity)
+        public async Task<TEntity> CreateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await this.context.Set<TEntity>().AddAsync(entity);
+            await this.context.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<TEntity> CreateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            this.context.Entry(entity).State = EntityState.Modified;
+            await this.context.SaveChangesAsync();
+            return entity;
         }
-        public Task RemoveEntity(TEntity entity)
+        public async Task RemoveEntity(TEntity entity)
         {
-            throw new NotImplementedException();
+            this.context.Set<TEntity>().Remove(entity);
+            await this.context.SaveChangesAsync();
         }
 
         private IQueryable<TEntity> ApplySpecEvaluator(ISpecification<TEntity> spec)

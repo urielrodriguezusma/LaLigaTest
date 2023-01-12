@@ -3,8 +3,9 @@
     public class ApiValidationErrorResponse : ApiResponse
     {
         public IEnumerable<string> Errors { get; set; }
-        public ApiValidationErrorResponse() : base(StatusCodes.Status400BadRequest)
+        public ApiValidationErrorResponse(IEnumerable<string> errors) : base(StatusCodes.Status400BadRequest)
         {
+            this.Errors = errors;
         }
     }
 }

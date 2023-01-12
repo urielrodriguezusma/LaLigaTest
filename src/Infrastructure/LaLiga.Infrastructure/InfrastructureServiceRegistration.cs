@@ -13,7 +13,8 @@ namespace LaLiga.Infrastructure
         {
             services.AddDbContext<CatalogContext>(opt =>
             {
-                opt.UseSqlServer(configuration.GetConnectionString("CatalogConnection"));
+                opt.UseSqlServer(configuration.GetConnectionString("CatalogConnection"))
+                   .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
