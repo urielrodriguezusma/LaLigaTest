@@ -2,27 +2,28 @@
 using LaLiga.Application.Contracts.Infrastructure;
 using LaLiga.Domain.Common;
 using LaLiga.Infrastructure.Persistence;
+using LaLiga.Application.Helpers;
 
 namespace LaLiga.Infrastructure.Repositories
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseDomainModel
     {
         private readonly CatalogContext context;
-
         public GenericRepository(CatalogContext context)
         {
             this.context = context;
         }
 
-        public async Task<IReadOnlyList<TEntity>> GetAllAsync()
+        public async Task<PagedList<TEntity>> GetAllAsync(UserParams userParams)
         {
-            return await this.context.Set<TEntity>().ToListAsync();
+            var pagedList = await PagedList<TEntity>.CreateAsync(this.context.Set<TEntity>(), userParams.PageNumber, userParams.PageSize);
+            return pagedList;
         }
 
-        public async Task<IReadOnlyList<TEntity>> GetAllWithSpecAsync(ISpecification<TEntity> spec)
+        public async Task<PagedList<TEntity>> GetAllWithSpecAsync(UserParams userParams, ISpecification<TEntity> spec)
         {
             var querySpecificationResult = ApplySpecEvaluator(spec);
-            return await querySpecificationResult.ToListAsync();
+            return await PagedList<TEntity>.CreateAsync(querySpecificationResult, userParams.PageNumber, userParams.PageSize);
         }
 
         public async Task<TEntity> GetByIdAsync(int id)
@@ -59,7 +60,7 @@ namespace LaLiga.Infrastructure.Repositories
         {
             IQueryable<TEntity> query = this.context.Set<TEntity>().AsQueryable();
             var queryResult = SpecificationEvaluator<TEntity>.Evaluate(query, spec);
-            return queryResult; 
+            return queryResult;
         }
     }
 }

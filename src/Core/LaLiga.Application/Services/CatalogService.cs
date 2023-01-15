@@ -2,43 +2,52 @@
 using LaLiga.Application.Contracts;
 using LaLiga.Application.Contracts.Infrastructure;
 using LaLiga.Application.Dto;
+using LaLiga.Application.Helpers;
 using LaLiga.Application.Specifications;
+using LaLiga.Domain.Common;
 using LaLiga.Domain.Model;
 
 namespace LaLiga.Application.Services
 {
     public class CatalogService : ICatalogService
     {
-        private readonly IUnitOfWork<Product> unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public CatalogService(IUnitOfWork<Product> unitOfWork,
+        public CatalogService(IUnitOfWork unitOfWork,
                              IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
-        public async Task<IReadOnlyList<ProductDto>> GetProductsAsync()
+        public async Task<PagedList<ProductDto>> GetProductsAsync(UserParams userParams)
         {
-            var products = await this.unitOfWork.GetRepository().GetAllAsync();
-            if (products != null)
+            var pagedList = await this.unitOfWork.GetRepository<Product>().GetAllAsync(userParams);
+
+            if (pagedList != null)
             {
-                return this.mapper.Map<IReadOnlyList<ProductDto>>(products);
+                return this.mapper.Map<PagedList<ProductDto>>(pagedList);
             }
             return null;
         }
-        public async Task<IReadOnlyList<ProductDto>> GetProductsWithSpecAsync(ProductWithCategorySpecification spec)
+        public async Task<PagedList<ProductDto>> GetProductsWithSpecAsync(UserParams userParams, ProductWithCategorySpecification spec)
         {
-            var products = await this.unitOfWork.GetRepository().GetAllWithSpecAsync(spec);
-            if (products != null)
-            {
-                return this.mapper.Map<IReadOnlyList<ProductDto>>(products);
+            var pagedList = await this.unitOfWork.GetRepository<Product>().GetAllWithSpecAsync(userParams, spec);
+            if (pagedList != null)
+            { 
+
+                var  = this.mapper.Map<List<ProductDto>>(pagedList);
+                var lstProductsDto = this.mapper.Map<List<ProductDto>>(pagedList);
+                return new PagedList<ProductDto>(lstProductsDto, 
+                                                 pagedList.PaginationHeader.TotalCount, 
+                                                 pagedList.PaginationHeader.CurrentPage, 
+                                                 pagedList.PaginationHeader.PageSize);
             }
             return null;
         }
         public async Task<ProductDto> GetProductByIdAsync(int id)
         {
-            var product= await this.unitOfWork.GetRepository().GetByIdAsync(id);
+            var product = await this.unitOfWork.GetRepository<Product>().GetByIdAsync(id);
             if (product != null)
             {
                 var productDto = this.mapper.Map<ProductDto>(product);
@@ -50,7 +59,7 @@ namespace LaLiga.Application.Services
 
         public async Task<ProductDto> GetProductsByIdWithSpecAsync(ProductWithCategorySpecification spec)
         {
-            var product = await this.unitOfWork.GetRepository().GetByIdWithSpecAsync(spec);
+            var product = await this.unitOfWork.GetRepository<Product>().GetByIdWithSpecAsync(spec);
             if (product != null)
             {
                 return this.mapper.Map<ProductDto>(product);
@@ -61,16 +70,16 @@ namespace LaLiga.Application.Services
 
         public async Task<ProductDto> CreateProductAsync(ProductToCreate newProduct)
         {
-            var product= this.mapper.Map<Product>(newProduct);
-            var productCreated = await this.unitOfWork.GetRepository().CreateAsync(product);
+            var product = this.mapper.Map<Product>(newProduct);
+            var productCreated = await this.unitOfWork.GetRepository<Product>().CreateAsync(product);
             var result = this.mapper.Map<ProductDto>(productCreated);
             return result;
         }
 
         public async Task<bool> DeleteProductByIdAsync(int id)
         {
-            var productRepo = this.unitOfWork.GetRepository();
-            var productToRemove= await productRepo.GetByIdAsync(id);
+            var productRepo = this.unitOfWork.GetRepository<Product>();
+            var productToRemove = await productRepo.GetByIdAsync(id);
             if (productToRemove != null)
             {
                 await productRepo.RemoveEntity(productToRemove);
@@ -82,7 +91,7 @@ namespace LaLiga.Application.Services
         public async Task<ProductDto> UpdateProductAsync(ProductDto product)
         {
             var productToUpdate = this.mapper.Map<Product>(product);
-            var updatedProduct = await this.unitOfWork.GetRepository().UpdateAsync(productToUpdate);
+            var updatedProduct = await this.unitOfWork.GetRepository<Product>().UpdateAsync(productToUpdate);
             var result = this.mapper.Map<ProductDto>(updatedProduct);
             return result;
         }

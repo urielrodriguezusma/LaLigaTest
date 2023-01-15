@@ -1,7 +1,9 @@
 ﻿using Catalog.Api.Errors;
+using Catalog.Api.Helpers;
 using LaLiga.Application.Contracts;
 using LaLiga.Application.Dto;
 using LaLiga.Application.Specifications;
+using LaLiga.Domain.Common;
 using LaLiga.Domain.Model;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +25,11 @@ namespace Catalog.Api.Controllers
         [ProducesResponseType(typeof(IReadOnlyList<ProductDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiValidationErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProducts([FromHeader] UserParams userParams)
         {
             ProductWithCategorySpecification productSpec = new ProductWithCategorySpecification();
-            var resp = await this.catalogService.GetProductsWithSpecAsync(productSpec).ConfigureAwait(false);
+            var resp = await this.catalogService.GetProductsWithSpecAsync(userParams, productSpec).ConfigureAwait(false);
+            this.Response.AddPaginationHeader(resp.PaginationHeader);
             if (resp == null)
             {
                 return NotFound(new ApiResponse(StatusCodes.Status404NotFound));

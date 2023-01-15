@@ -2,8 +2,8 @@
 
 namespace LaLiga.Application.Contracts.Infrastructure
 {
-    public interface IUnitOfWork<TEntity> where TEntity : BaseDomainModel
+    public interface IUnitOfWork
     {
-        IGenericRepository<TEntity> GetRepository();
+        IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseDomainModel;
     }
 }

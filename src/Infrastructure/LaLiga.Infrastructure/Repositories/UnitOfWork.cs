@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace LaLiga.Infrastructure.Repositories
 {
-    public class UnitOfWork<TEntity> : IUnitOfWork<TEntity> where TEntity : BaseDomainModel
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly CatalogContext catalogContext;
         private Hashtable hashtable;
@@ -14,7 +14,7 @@ namespace LaLiga.Infrastructure.Repositories
         {
             this.catalogContext = catalogContext;
         }
-        public IGenericRepository<TEntity> GetRepository()
+        public IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseDomainModel
         {
             var entityType = typeof(TEntity);
             if (hashtable == null)

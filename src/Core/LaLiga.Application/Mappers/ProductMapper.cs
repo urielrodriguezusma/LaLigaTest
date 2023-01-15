@@ -8,6 +8,7 @@ namespace LaLiga.Application.Mappers
     {
         public ProductMapper()
         {
+           
             this.CreateMap<Product, ProductDto>()
                 .ForMember(d => d.ProductId, src => src.MapFrom(p => p.Id))
                 .ForMember(d => d.ProductName, src => src.MapFrom(p => p.Name))
